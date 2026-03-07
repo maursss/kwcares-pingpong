@@ -222,6 +222,7 @@
                                 <option value="Venmo">Pay now via Venmo</option>
                                 <option value="Cash at Door">Pay Cash at the Door</option>
                             </select>
+                            <p id="cashWarning" class="hidden text-xs text-red-600 font-bold mt-2">⚠️ Please bring exact cash as we may not have change.</p>
                         </div>
 
                         <div id="potluckDiv" class="hidden p-4 bg-red-50 border border-red-100 rounded-xl space-y-4">
@@ -265,7 +266,7 @@
 
                 <section class="glass-card p-8 border-t-4 border-kw-red text-center">
                     <h3 class="font-display text-2xl font-bold mb-4 text-gray-900">Support the Cause</h3>
-                    <p class="text-gray-500 mb-6 italic text-sm">Can't make it? Or just feeling generous? Scan or tap below to donate directly to our local KW Cares Venmo.</p>
+                    <p class="text-gray-500 mb-6 italic text-sm">Can't make it? Or just feeling generous? Scan or tap below to donate directly to our local KW Cares Venmo. <br><br><span class="font-bold text-kw-red">Make sure to include the 🏓 emoji in your note!</span></p>
                     <div class="inline-block p-4 bg-white rounded-2xl shadow-sm border border-gray-100 mb-6">
                         <img src="venmo.png" alt="Venmo QR Code" class="w-48 h-48 mx-auto object-contain">
                     </div>
@@ -280,7 +281,6 @@
     </main>
 
     <script>
-        // --- COUNTDOWN TIMER LOGIC ---
         const targetDate = new Date('April 10, 2026 11:00:00').getTime();
         
         const countdownTimer = setInterval(() => {
@@ -290,10 +290,6 @@
             if (distance < 0) {
                 clearInterval(countdownTimer);
                 document.getElementById('countdown-wrapper').innerHTML = '<div class="text-kw-red font-black text-xl text-center mb-6 uppercase tracking-widest bg-red-50 p-3 rounded-xl border border-red-100">Registration is Closed</div>';
-                
-                // Optional: Disable the form when the timer hits zero
-                // document.getElementById('signupForm').style.opacity = '0.5';
-                // document.getElementById('submitBtn').disabled = true;
                 return;
             }
 
@@ -302,8 +298,6 @@
             document.getElementById('cd-mins').innerText = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60)).toString().padStart(2, '0');
             document.getElementById('cd-secs').innerText = Math.floor((distance % (1000 * 60)) / 1000).toString().padStart(2, '0');
         }, 1000);
-        // -----------------------------
-
 
         const scriptURL = 'https://script.google.com/macros/s/AKfycbwxk5qsMzHRYoz1714ZYn5GEMQm_Vcc33bNO1S29PCDSxDVT-3-0LuBftNDq2dSku2ucg/exec';
         
@@ -312,6 +306,7 @@
         
         const paymentDiv = document.getElementById('paymentDiv');
         const paymentMethod = document.getElementById('paymentMethod');
+        const cashWarning = document.getElementById('cashWarning');
 
         const potluckDiv = document.getElementById('potluckDiv');
         const potluckContent = document.getElementById('potluckContent');
@@ -327,6 +322,15 @@
 
         let livePotluckData = {};
 
+        // NEW: Toggle Cash Warning
+        paymentMethod.addEventListener('change', () => {
+            if (paymentMethod.value === 'Cash at Door') {
+                cashWarning.classList.remove('hidden');
+            } else {
+                cashWarning.classList.add('hidden');
+            }
+        });
+
         userType.addEventListener('change', async () => {
             const val = userType.value;
 
@@ -337,6 +341,7 @@
                 paymentDiv.classList.add('hidden');
                 paymentMethod.required = false;
                 paymentMethod.value = ""; 
+                cashWarning.classList.add('hidden'); // Also hide the warning if they switch to Free
             }
 
             if (val.includes('Potluck')) {
@@ -435,13 +440,13 @@
                 if (formData.paymentMethod === 'Venmo') {
                     msg.innerHTML = `
                         <p class="font-bold text-lg mb-2">Success! Your spot is secured. 🏓</p>
-                        <p class="text-sm mb-4">Since you chose Venmo, please complete your $10 registration fee by clicking below:</p>
+                        <p class="text-sm mb-4">Since you chose Venmo, please complete your $10 registration fee by clicking below. <strong>Don't forget to include the 🏓 emoji in your Venmo note!</strong></p>
                         <a href="https://venmo.com/u/KWDSMLOCAL" target="_blank" class="inline-block bg-[#008CFF] text-white px-6 py-3 rounded-full font-bold shadow-md hover:bg-[#0074d6] transition-all">Pay $10 via Venmo</a>
                     `;
                 } else if (formData.paymentMethod === 'Cash at Door') {
                     msg.innerHTML = `
                         <p class="font-bold text-lg mb-2">Success! Your spot is secured. 🏓</p>
-                        <p class="text-sm">We have you marked down for Cash. Don't forget to bring your $10 to the door on game day!</p>
+                        <p class="text-sm">We have you marked down for Cash. Don't forget to bring <strong>exact change ($10)</strong> to the door on game day!</p>
                     `;
                 } else {
                     msg.innerHTML = `
