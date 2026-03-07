@@ -134,11 +134,17 @@
                     <h2 class="font-display text-2xl font-bold mb-6 text-gray-900">The Details</h2>
                     <ul class="space-y-4">
                         <li class="flex justify-between items-center p-4 bg-gray-50 rounded-xl border border-gray-100">
-                            <span class="font-semibold text-gray-700">Tournament Player Only</span>
+                            <div>
+                                <span class="font-semibold text-gray-700">Tournament Player Only</span>
+                                <p class="text-xs text-gray-500 mt-1">Includes your bracket spot & full access to the potluck!</p>
+                            </div>
                             <span class="font-bold text-xl text-kw-red">$10</span>
                         </li>
                         <li class="flex justify-between items-center p-4 bg-gray-50 rounded-xl border border-gray-100">
-                            <span class="font-semibold text-gray-700">Spectator Only</span>
+                            <div>
+                                <span class="font-semibold text-gray-700">Spectator Only</span>
+                                <p class="text-xs text-gray-500 mt-1">Includes front-row seats & full access to the potluck!</p>
+                            </div>
                             <span class="font-bold text-xl text-kw-red">$10</span>
                         </li>
                         <li class="flex justify-between items-center p-4 bg-red-50 rounded-xl border border-red-100">
@@ -322,7 +328,6 @@
 
         let livePotluckData = {};
 
-        // NEW: Toggle Cash Warning
         paymentMethod.addEventListener('change', () => {
             if (paymentMethod.value === 'Cash at Door') {
                 cashWarning.classList.remove('hidden');
@@ -341,7 +346,7 @@
                 paymentDiv.classList.add('hidden');
                 paymentMethod.required = false;
                 paymentMethod.value = ""; 
-                cashWarning.classList.add('hidden'); // Also hide the warning if they switch to Free
+                cashWarning.classList.add('hidden'); 
             }
 
             if (val.includes('Potluck')) {
