@@ -238,7 +238,7 @@
                             
                             <div id="potluckContent" class="hidden space-y-4">
                                 <div>
-                                    <label class="text-xs uppercase font-bold text-gray-700 mb-2 block">Select Category (Max 5 each)</label>
+                                    <label class="text-xs uppercase font-bold text-gray-700 mb-2 block">Select Category</label>
                                     <select id="potluckCategory" class="w-full bg-white border border-red-200 text-gray-900 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-kw-red cursor-pointer">
                                         <option value="">-- Choose Category --</option>
                                         <option value="Appetizer">Appetizer / Starter</option>
@@ -358,16 +358,25 @@
                     const response = await fetch(scriptURL);
                     livePotluckData = await response.json();
                     
+                    const categoryLimits = {
+                        "Appetizer": 5,
+                        "Main": 5,
+                        "Side": 5,
+                        "Dessert": 3,
+                        "Drinks": 3
+                    };
+                    
                     Array.from(potluckCategory.options).forEach(option => {
                         if (option.value === "") return;
                         const categoryName = option.value;
                         const itemsArray = livePotluckData[categoryName] || [];
                         const count = itemsArray.length;
+                        const limit = categoryLimits[categoryName] || 5;
                         
                         let baseText = option.text.split('(')[0].trim(); 
-                        option.text = `${baseText} (${count}/5)`;
+                        option.text = `${baseText} (${count}/${limit})`;
                         
-                        if (count >= 5) {
+                        if (count >= limit) {
                             option.disabled = true;
                             option.text = `${baseText} (FULL)`;
                         }
